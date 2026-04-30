@@ -108,7 +108,6 @@ edutrack-ai/
 │   └── screenshots/        # Add app screenshots here
 ├── assets/                 # Icons, images (if any)
 ├── README.md
-├── LICENSE
 └── .gitignore
 ```
 
@@ -152,17 +151,10 @@ EduTrack AI is designed in accordance with India's **National Education Policy 2
 
 ---
 
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
 ## 🙏 Acknowledgements
 
 - [Anthropic](https://anthropic.com) for the Claude API
 - [Google Fonts](https://fonts.google.com) for DM Sans and Space Mono
-- NEP 2020 guidelines from the Ministry of Education, Government of India
 
 ---
 
