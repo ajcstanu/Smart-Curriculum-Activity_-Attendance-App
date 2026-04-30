@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2638;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #e8eaf0;
+    --text2: #8b92a8;
+    --text3: #4d556b;
+    --accent: #4f8ef7;
+    --accent2: #6c63ff;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --teal: #14b8a6;
+    --pink: #ec4899;
+    --font: 'DM Sans', sans-serif;
+    --mono: 'Space Mono', monospace;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── GRID BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 16px 40px; }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 0 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-brand { display: flex; align-items: center; gap: 12px; }
+  .brand-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .brand-name { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
+  .brand-tag { font-size: 11px; color: var(--text2); margin-top: 1px; }
+  .header-meta { display: flex; align-items: center; gap: 16px; }
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
+    border-radius: 20px; padding: 4px 10px; font-size: 11px; color: var(--green); font-weight: 500;
+  }
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+  .time-display { font-family: var(--mono); font-size: 13px; color: var(--text2); }
+  .user-pill {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 5px 12px 5px 6px; font-size: 12px; cursor: pointer;
+    transition: border-color .2s;
+  }
+  .user-pill:hover { border-color: var(--border2); }
+  .avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b, #ec4899);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; color: white;
+  }
+
+  /* ── NAV TABS ── */
+  .nav-bar {
+    display: flex; gap: 4px; padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-tab {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 14px; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all .2s; color: var(--text2); border: none;
+    background: transparent;
+  }
+  .nav-tab:hover { background: var(--bg2); color: var(--text); }
+  .nav-tab.active {
+    background: rgba(79,142,247,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(79,142,247,0.2);
+  }
+  .nav-icon { font-size: 15px; }
+
+  /* ── CONTENT AREA ── */
+  .content { padding: 24px 0; }
+  .tab-view { display: none; }
+  .tab-view.active { display: block; }
+
+  /* ── STAT CARDS ROW ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px; margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px;
+    position: relative; overflow: hidden; transition: border-color .2s;
+  }
+  .stat-card:hover { border-color: var(--border2); }
+  .stat-card::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--stat-color, var(--accent));
+  }
+  .stat-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+  .stat-value { font-size: 28px; font-weight: 600; font-family: var(--mono); line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--text2); margin-top: 4px; }
+  .stat-change { font-size: 11px; margin-top: 6px; }
+  .stat-change.up { color: var(--green); }
+  .stat-change.down { color: var(--red); }
+
+  /* ── GRID 2-COL ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .grid-3 { grid-template-columns: 1fr; } }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-bottom: 1px solid var(--border);
+  }
+  .card-title { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .card-body { padding: 16px; }
+  .card-action {
+    font-size: 11px; color: var(--accent); cursor: pointer;
+    background: none; border: none; font-family: var(--font);
+    transition: opacity .2s;
+  }
+  .card-action:hover { opacity: .7; }
+
+  /* ── TIMETABLE ── */
+  .timetable { display: flex; flex-direction: column; gap: 4px; }
+  .period-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--bg3);
+    transition: all .2s; cursor: pointer; position: relative;
+  }
+  .period-row:hover { border-color: var(--border2); background: rgba(255,255,255,0.03); }
+  .period-row.current { border-color: rgba(79,142,247,0.3); background: rgba(79,142,247,0.06); }
+  .period-row.free { border-color: rgba(245,158,11,0.25); background: rgba(245,158,11,0.04); }
+  .period-row.done { opacity: .5; }
+  .period-time { font-family: var(--mono); font-size: 11px; color: var(--text2); min-width: 80px; }
+  .period-info { flex: 1; }
+  .period-name { font-size: 13px; font-weight: 500; }
+  .period-room { font-size: 11px; color: var(--text2); margin-top: 1px; }
+  .period-badge {
+    font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 10px;
+    text-transform: uppercase; letter-spacing: .3px;
+  }
+  .badge-current { background: rgba(79,142,247,0.15); color: var(--accent); border: 1px solid rgba(79,142,247,0.25); }
+  .badge-free { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+  .badge-upcoming { background: rgba(139,146,168,0.1); color: var(--text2); border: 1px solid var(--border); }
+  .badge-done { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+  .current-marker {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--accent); border-radius: 3px 0 0 3px;
+  }
+
+  /* ── ATTENDANCE BOARD ── */
+  .class-selector {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
+  }
+  .class-chip {
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: all .2s; border: 1px solid var(--border);
+    background: var(--bg3); color: var(--text2);
+  }
+  .class-chip.active { background: rgba(79,142,247,0.12); color: var(--accent); border-color: rgba(79,142,247,0.3); }
+  .class-chip:hover:not(.active) { border-color: var(--border2); color: var(--text); }
+
+  .scan-zone {
+    border: 2px dashed rgba(79,142,247,0.3);
+    border-radius: var(--radius); padding: 28px 20px;
+    text-align: center; background: rgba(79,142,247,0.04);
+    cursor: pointer; transition: all .25s; margin-bottom: 16px;
+  }
+  .scan-zone:hover { border-color: rgba(79,142,247,0.6); background: rgba(79,142,247,0.08); }
+  .scan-zone.scanning {
+    border-color: var(--green); background: rgba(34,197,94,0.05);
+    animation: scan-pulse .8s ease-in-out infinite alternate;
+  }
+  @keyframes scan-pulse { from{border-color:rgba(34,197,94,0.4)} to{border-color:rgba(34,197,94,0.9)} }
+  .scan-icon { font-size: 36px; margin-bottom: 10px; }
+  .scan-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .scan-sub { font-size: 12px; color: var(--text2); }
+  .scan-methods {
+    display: flex; justify-content: center; gap: 10px; margin-top: 14px;
+  }
+  .scan-method {
+    padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 500;
+    border: 1px solid var(--border); background: var(--bg3); color: var(--text2);
+    cursor: pointer; transition: all .2s;
+  }
+  .scan-method.active { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.1); }
+
+  .students-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px;
+  }
+  .student-tile {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 10px;
+    text-align: center; transition: all .2s; cursor: pointer; position: relative;
+  }
+  .student-tile:hover { border-color: var(--border2); }
+  .student-tile.present { border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.05); }
+  .student-tile.absent { border-color: rgba(239,68,68,0.25); opacity: .6; }
+  .student-tile.late { border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.04); }
+  .stu-avatar {
+    width: 36px; height: 36px; border-radius: 50%; margin: 0 auto 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: white;
+  }
+  .stu-name { font-size: 11px; font-weight: 500; margin-bottom: 4px; line-height: 1.3; }
+  .stu-roll { font-size: 10px; color: var(--text2); }
+  .stu-status-dot {
+    position: absolute; top: 8px; right: 8px;
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .dot-present { background: var(--green); }
+  .dot-absent { background: var(--red); }
+  .dot-late { background: var(--amber); }
+  .dot-unmarked { background: var(--text3); }
+
+  /* ── ATTENDANCE PROGRESS ── */
+  .att-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .att-bar-label { font-size: 12px; color: var(--text2); min-width: 70px; }
+  .att-bar-track {
+    flex: 1; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden;
+  }
+  .att-bar-fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
+  .att-bar-pct { font-size: 11px; font-family: var(--mono); color: var(--text2); min-width: 32px; text-align: right; }
+
+  /* ── FREE PERIOD SUGGESTIONS ── */
+  .suggestion-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px; cursor: pointer;
+    transition: all .2s; margin-bottom: 10px;
+  }
+  .suggestion-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+  .suggestion-card.selected { border-color: rgba(79,142,247,0.4); background: rgba(79,142,247,0.06); }
+  .sug-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+  .sug-title { font-size: 13px; font-weight: 600; }
+  .sug-type {
+    font-size: 10px; padding: 3px 8px; border-radius: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .3px; white-space: nowrap;
+  }
+  .type-study { background: rgba(79,142,247,0.12); color: var(--accent); }
+  .type-skill { background: rgba(108,99,255,0.12); color: #a78bfa; }
+  .type-career { background: rgba(20,184,166,0.12); color: var(--teal); }
+  .type-wellness { background: rgba(34,197,94,0.1); color: var(--green); }
+  .sug-desc { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 10px; }
+  .sug-meta { display: flex; align-items: center; gap: 12px; font-size: 11px; color: var(--text2); }
+  .sug-tag { display: flex; align-items: center; gap: 4px; }
+
+  /* ── DAILY ROUTINE ── */
+  .routine-timeline { position: relative; padding-left: 28px; }
+  .routine-timeline::before {
+    content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px;
+    width: 1.5px; background: var(--border);
+  }
+  .routine-item {
+    position: relative; margin-bottom: 12px; padding: 12px 14px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); transition: all .2s;
+  }
+  .routine-item:hover { border-color: var(--border2); }
+  .routine-item.active { border-color: rgba(79,142,247,0.3); background: rgba(79,142,247,0.05); }
+  .routine-item::before {
+    content: ''; position: absolute; left: -22px; top: 50%; transform: translateY(-50%);
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--bg3); border: 2px solid var(--border2); z-index: 1;
+  }
+  .routine-item.active::before { background: var(--accent); border-color: var(--accent); }
+  .routine-item.done::before { background: var(--green); border-color: var(--green); }
+  .routine-time { font-family: var(--mono); font-size: 10px; color: var(--text2); margin-bottom: 3px; }
+  .routine-title { font-size: 13px; font-weight: 500; }
+  .routine-goal { font-size: 11px; color: var(--text2); margin-top: 3px; }
+
+  /* ── GOAL TRACKER ── */
+  .goal-item {
+    padding: 14px; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); margin-bottom: 8px; transition: all .2s;
+  }
+  .goal-item:hover { border-color: var(--border2); }
+  .goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .goal-name { font-size: 13px; font-weight: 500; }
+  .goal-pct { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+  .goal-track { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .goal-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .6s ease; }
+  .goal-sub { font-size: 11px; color: var(--text2); margin-top: 6px; }
+
+  /* ── AI CHAT PANEL ── */
+  .ai-messages {
+    height: 280px; overflow-y: auto; padding: 12px;
+    display: flex; flex-direction: column; gap: 10px;
+    scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
+  }
+  .msg { max-width: 88%; padding: 10px 13px; border-radius: var(--radius); font-size: 13px; line-height: 1.5; }
+  .msg-ai { background: var(--bg3); border: 1px solid var(--border); align-self: flex-start; }
+  .msg-user { background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.2); align-self: flex-end; color: var(--accent); }
+  .msg-typing { display: flex; gap: 4px; align-items: center; padding: 14px 13px; }
+  .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); animation: typing .8s ease-in-out infinite; }
+  .typing-dot:nth-child(2) { animation-delay: .15s; }
+  .typing-dot:nth-child(3) { animation-delay: .3s; }
+  @keyframes typing { 0%,80%,100%{transform:translateY(0);opacity:.4} 40%{transform:translateY(-6px);opacity:1} }
+  .ai-input-row {
+    display: flex; gap: 8px; padding: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .ai-input {
+    flex: 1; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 9px 12px; font-size: 13px;
+    color: var(--text); font-family: var(--font); outline: none; transition: border-color .2s;
+  }
+  .ai-input:focus { border-color: rgba(79,142,247,0.4); }
+  .ai-input::placeholder { color: var(--text3); }
+  .btn-send {
+    background: var(--accent); border: none; border-radius: var(--radius-sm);
+    padding: 9px 14px; color: white; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: opacity .2s; font-family: var(--font);
+  }
+  .btn-send:hover { opacity: .85; }
+
+  /* ── SCREEN DISPLAY PANEL ── */
+  .screen-view {
+    background: #000; border-radius: var(--radius); padding: 24px;
+    min-height: 260px; text-align: center; position: relative; overflow: hidden;
+  }
+  .screen-view::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(79,142,247,0.08) 0%, transparent 70%);
+  }
+  .screen-header { font-size: 11px; color: rgba(255,255,255,0.3); margin-bottom: 20px; font-family: var(--mono); }
+  .screen-subject { font-size: 22px; font-weight: 700; color: white; margin-bottom: 4px; letter-spacing: -0.5px; }
+  .screen-room { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 20px; }
+  .present-count { font-size: 56px; font-weight: 700; font-family: var(--mono); color: var(--accent); line-height: 1; }
+  .present-label { font-size: 13px; color: rgba(255,255,255,0.4); margin: 4px 0 20px; }
+  .screen-names-row {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-height: 80px; overflow: hidden;
+  }
+  .screen-name-pill {
+    font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 500;
+    background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.1);
+    animation: pop-in .3s ease;
+  }
+  .screen-name-pill.new { background: rgba(34,197,94,0.15); color: var(--green); border-color: rgba(34,197,94,0.3); }
+  @keyframes pop-in { from{opacity:0;transform:scale(.85)} to{opacity:1;transform:scale(1)} }
+
+  /* ── NOTIFICATIONS ── */
+  .notif-toast {
+    position: fixed; bottom: 20px; right: 20px;
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: var(--radius); padding: 12px 16px; min-width: 240px;
+    z-index: 999; display: flex; align-items: flex-start; gap: 10px;
+    transform: translateX(120%); transition: transform .3s ease;
+    font-size: 13px;
+  }
+  .notif-toast.show { transform: translateX(0); }
+  .notif-icon { font-size: 16px; }
+  .notif-text-title { font-weight: 600; margin-bottom: 2px; font-size: 13px; }
+  .notif-text-sub { font-size: 12px; color: var(--text2); }
+
+  /* ── PROFILE ── */
+  .profile-header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 20px; background: var(--bg3); border-radius: var(--radius); margin-bottom: 16px;
+    border: 1px solid var(--border);
+  }
+  .profile-avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700; color: white;
+  }
+  .profile-name { font-size: 16px; font-weight: 600; }
+  .profile-meta { font-size: 12px; color: var(--text2); margin-top: 3px; }
+  .interests-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .interest-tag {
+    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+    background: var(--bg3); border: 1px solid var(--border); color: var(--text2);
+  }
+  .interest-tag.selected { background: rgba(79,142,247,0.1); color: var(--accent); border-color: rgba(79,142,247,0.3); }
+
+  /* ── MISC ── */
+  .section-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--text3); margin-bottom: 10px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+  .btn {
+    padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all .2s; border: none; font-family: var(--font);
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { opacity: .85; }
+  .btn-secondary {
+    background: transparent; color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--border2); color: var(--text); }
+  .flex-row { display: flex; align-items: center; gap: 8px; }
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+
+  /* Donut */
+  .donut-wrap { display: flex; align-items: center; gap: 20px; }
+  svg.donut { overflow: visible; }
+  .donut-legend { flex: 1; }
+  .legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .legend-label { font-size: 12px; color: var(--text2); }
+  .legend-val { font-size: 12px; font-family: var(--mono); color: var(--text); margin-left: auto; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-brand">
+      <div class="brand-icon">🎓</div>
+      <div>
+        <div class="brand-name">EduTrack AI</div>
+        <div class="brand-tag">Smart Attendance & Productivity</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="live-badge"><div class="live-dot"></div>Live Session</div>
+      <div class="time-display" id="clock">--:--:--</div>
+      <div class="user-pill" onclick="switchTab('profile')">
+        <div class="avatar">AR</div>
+        <span>Aarav R.</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="nav-bar">
+    <button class="nav-tab active" onclick="switchTab('dashboard')" id="tab-dashboard">
+      <span class="nav-icon">📊</span> Dashboard
+    </button>
+    <button class="nav-tab" onclick="switchTab('attendance')" id="tab-attendance">
+      <span class="nav-icon">✅</span> Attendance
+    </button>
+    <button class="nav-tab" onclick="switchTab('schedule')" id="tab-schedule">
+      <span class="nav-icon">📅</span> Schedule
+    </button>
+    <button class="nav-tab" onclick="switchTab('freeperiod')" id="tab-freeperiod">
+      <span class="nav-icon">⚡</span> Free Period
+    </button>
+    <button class="nav-tab" onclick="switchTab('goals')" id="tab-goals">
+      <span class="nav-icon">🎯</span> Goals
+    </button>
+    <button class="nav-tab" onclick="switchTab('profile')" id="tab-profile">
+      <span class="nav-icon">👤</span> Profile
+    </button>
+  </nav>
+
+  <div class="content">
+
+    <!-- ══════════════ DASHBOARD ══════════════ -->
+    <div class="tab-view active" id="view-dashboard">
+      <div class="stats-row">
+        <div class="stat-card" style="--stat-color: var(--accent)">
+          <div class="stat-label">Today's Attendance</div>
+          <div class="stat-value" id="dash-pct">84%</div>
+          <div class="stat-sub">Class average</div>
+          <div class="stat-change up">↑ +3% vs yesterday</div>
+        </div>
+        <div class="stat-card" style="--stat-color: var(--green)">
+          <div class="stat-label">Present Today</div>
+          <div class="stat-value" id="dash-present">36</div>
+          <div class="stat-sub">Out of 43 students</div>
+          <div class="stat-change up">↑ 2 late arrivals</div>
+        </div>
+        <div class="stat-card" style="--stat-color: var(--amber)">
+          <div class="stat-label">Your Attendance</div>
+          <div class="stat-value">91%</div>
+          <div class="stat-sub">Semester to date</div>
+          <div class="stat-change up">✓ Above threshold</div>
+        </div>
+        <div class="stat-card" style="--stat-color: var(--teal)">
+          <div class="stat-label">Free Periods Today</div>
+          <div class="stat-value">2</div>
+          <div class="stat-sub">Tasks suggested: 5</div>
+          <div class="stat-change up">↑ 3 completed</div>
+        </div>
+        <div class="stat-card" style="--stat-color: var(--pink)">
+          <div class="stat-label">Goal Progress</div>
+          <div class="stat-value">68%</div>
+          <div class="stat-sub">Semester goals</div>
+          <div class="stat-change up">↑ On track</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Today's Schedule -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📅 Today's Timetable</div>
+            <button class="card-action" onclick="switchTab('schedule')">View all →</button>
+          </div>
+          <div class="card-body">
+            <div class="timetable" id="mini-timetable"></div>
+          </div>
+        </div>
+
+        <!-- Attendance Donut -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📊 Attendance Breakdown</div>
+            <button class="card-action" onclick="switchTab('attendance')">Manage →</button>
+          </div>
+          <div class="card-body">
+            <div class="donut-wrap">
+              <svg class="donut" width="110" height="110" viewBox="0 0 110 110">
+                <circle cx="55" cy="55" r="42" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="14"/>
+                <circle cx="55" cy="55" r="42" fill="none" stroke="#22c55e" stroke-width="14"
+                  stroke-dasharray="222 42" stroke-dashoffset="0" stroke-linecap="round"
+                  transform="rotate(-90 55 55)"/>
+                <circle cx="55" cy="55" r="42" fill="none" stroke="#ef4444" stroke-width="14"
+                  stroke-dasharray="25 239" stroke-dashoffset="-222" stroke-linecap="round"
+                  transform="rotate(-90 55 55)"/>
+                <circle cx="55" cy="55" r="42" fill="none" stroke="#f59e0b" stroke-width="14"
+                  stroke-dasharray="17 247" stroke-dashoffset="-247" stroke-linecap="round"
+                  transform="rotate(-90 55 55)"/>
+                <text x="55" y="51" text-anchor="middle" fill="#e8eaf0" font-size="14" font-weight="700" font-family="'Space Mono',monospace">36</text>
+                <text x="55" y="64" text-anchor="middle" fill="#8b92a8" font-size="10" font-family="'DM Sans',sans-serif">students</text>
+              </svg>
+              <div class="donut-legend">
+                <div class="legend-row">
+                  <div class="legend-dot" style="background:var(--green)"></div>
+                  <div class="legend-label">Present</div>
+                  <div class="legend-val">36</div>
+                </div>
+                <div class="legend-row">
+                  <div class="legend-dot" style="background:var(--red)"></div>
+                  <div class="legend-label">Absent</div>
+                  <div class="legend-val">5</div>
+                </div>
+                <div class="legend-row">
+                  <div class="legend-dot" style="background:var(--amber)"></div>
+                  <div class="legend-label">Late</div>
+                  <div class="legend-val">2</div>
+                </div>
+              </div>
+            </div>
+            <hr class="divider">
+            <div class="section-label">Weekly Trend</div>
+            <div class="att-bar-row"><div class="att-bar-label">Mon</div><div class="att-bar-track"><div class="att-bar-fill" style="width:82%;background:var(--accent)"></div></div><div class="att-bar-pct">82%</div></div>
+            <div class="att-bar-row"><div class="att-bar-label">Tue</div><div class="att-bar-track"><div class="att-bar-fill" style="width:78%;background:var(--accent)"></div></div><div class="att-bar-pct">78%</div></div>
+            <div class="att-bar-row"><div class="att-bar-label">Wed</div><div class="att-bar-track"><div class="att-bar-fill" style="width:90%;background:var(--green)"></div></div><div class="att-bar-pct">90%</div></div>
+            <div class="att-bar-row"><div class="att-bar-label">Thu</div><div class="att-bar-track"><div class="att-bar-fill" style="width:84%;background:var(--accent)"></div></div><div class="att-bar-pct">84%</div></div>
+            <div class="att-bar-row"><div class="att-bar-label">Fri (Today)</div><div class="att-bar-track"><div class="att-bar-fill" style="width:84%;background:var(--amber)"></div></div><div class="att-bar-pct">84%</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Advisor -->
+      <div class="card mt-16">
+        <div class="card-header">
+          <div class="card-title">🤖 AI Academic Advisor</div>
+          <span style="font-size:11px;color:var(--text2)">Powered by Claude</span>
+        </div>
+        <div class="ai-messages" id="ai-messages"></div>
+        <div class="ai-input-row">
+          <input class="ai-input" id="ai-input" placeholder="Ask about your schedule, goals, career paths..." onkeydown="if(event.key==='Enter')sendAIMsg()">
+          <button class="btn-send" onclick="sendAIMsg()">Send ↗</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ ATTENDANCE ══════════════ -->
+    <div class="tab-view" id="view-attendance">
+      <div class="grid-2">
+        <div>
+          <!-- Class selector -->
+          <div class="card-title" style="margin-bottom:12px">📋 Mark Attendance</div>
+          <div class="class-selector" id="class-chips"></div>
+
+          <!-- Scan zone -->
+          <div class="scan-zone" id="scan-zone" onclick="triggerScan()">
+            <div class="scan-icon" id="scan-icon">📷</div>
+            <div class="scan-title" id="scan-title">Tap to Start Attendance Scan</div>
+            <div class="scan-sub" id="scan-sub">Students can check in via QR code, Bluetooth, or Face ID</div>
+            <div class="scan-methods">
+              <div class="scan-method active" onclick="selectMethod(event,'qr')">QR Code</div>
+              <div class="scan-method" onclick="selectMethod(event,'bt')">Bluetooth</div>
+              <div class="scan-method" onclick="selectMethod(event,'face')">Face ID</div>
+              <div class="scan-method" onclick="selectMethod(event,'wifi')">Wi-Fi</div>
+            </div>
+          </div>
+
+          <!-- Student grid -->
+          <div class="section-label" style="margin-top:16px">Students — Click to toggle status</div>
+          <div class="students-grid" id="students-grid"></div>
+        </div>
+
+        <div>
+          <!-- Classroom Screen Preview -->
+          <div class="section-label">📺 Classroom Screen Display</div>
+          <div class="screen-view">
+            <div class="screen-header">LIVE ATTENDANCE — CS401 · Room 204</div>
+            <div class="screen-subject">Data Structures</div>
+            <div class="screen-room">Prof. Sharma · 10:00 AM – 11:00 AM</div>
+            <div class="present-count" id="screen-count">36</div>
+            <div class="present-label">students present</div>
+            <div class="screen-names-row" id="screen-names"></div>
+          </div>
+
+          <!-- Attendance Progress -->
+          <div class="card mt-16">
+            <div class="card-header">
+              <div class="card-title">📈 Class Attendance Stats</div>
+            </div>
+            <div class="card-body">
+              <div class="att-bar-row"><div class="att-bar-label">CS401</div><div class="att-bar-track"><div class="att-bar-fill" style="width:84%;background:var(--accent)"></div></div><div class="att-bar-pct">84%</div></div>
+              <div class="att-bar-row"><div class="att-bar-label">MATH301</div><div class="att-bar-track"><div class="att-bar-fill" style="width:91%;background:var(--green)"></div></div><div class="att-bar-pct">91%</div></div>
+              <div class="att-bar-row"><div class="att-bar-label">PHY201</div><div class="att-bar-track"><div class="att-bar-fill" style="width:76%;background:var(--amber)"></div></div><div class="att-bar-pct">76%</div></div>
+              <div class="att-bar-row"><div class="att-bar-label">ENG101</div><div class="att-bar-track"><div class="att-bar-fill" style="width:68%;background:var(--red)"></div></div><div class="att-bar-pct">68%</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ SCHEDULE ══════════════ -->
+    <div class="tab-view" id="view-schedule">
+      <div class="grid-2">
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📅 Today's Full Schedule</div>
+              <span style="font-size:11px;color:var(--text2)">Thu, Apr 30</span>
+            </div>
+            <div class="card-body">
+              <div class="timetable" id="full-timetable"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🔄 Daily Routine Generator</div>
+            </div>
+            <div class="card-body">
+              <div class="section-label">Personalized routine based on your goals</div>
+              <div class="routine-timeline" id="routine-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ FREE PERIOD ══════════════ -->
+    <div class="tab-view" id="view-freeperiod">
+      <div class="grid-2">
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⚡ Free Period Now: 12:00 – 1:00 PM</div>
+            </div>
+            <div class="card-body">
+              <div class="section-label">AI-personalized tasks for your interests & goals</div>
+              <div id="suggestions-list"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📌 Your Focus Profile</div>
+            </div>
+            <div class="card-body">
+              <div class="section-label">Interests & Strengths</div>
+              <div class="interests-list" id="interests-list"></div>
+              <hr class="divider">
+              <div class="section-label">Career Direction</div>
+              <div class="goal-item">
+                <div class="flex-between">
+                  <div style="font-size:13px;font-weight:500">Software Engineer</div>
+                  <span class="sug-type type-career">Primary</span>
+                </div>
+                <div style="font-size:12px;color:var(--text2);margin-top:4px">Focus: Backend systems, algorithms, open source</div>
+              </div>
+              <div class="goal-item">
+                <div class="flex-between">
+                  <div style="font-size:13px;font-weight:500">Data Scientist</div>
+                  <span class="sug-type type-skill">Secondary</span>
+                </div>
+                <div style="font-size:12px;color:var(--text2);margin-top:4px">Focus: ML, statistics, Python</div>
+              </div>
+              <hr class="divider">
+              <div class="section-label">Today's Productivity</div>
+              <div class="att-bar-row"><div class="att-bar-label">Focus</div><div class="att-bar-track"><div class="att-bar-fill" style="width:72%;background:var(--accent)"></div></div><div class="att-bar-pct">72%</div></div>
+              <div class="att-bar-row"><div class="att-bar-label">Tasks</div><div class="att-bar-track"><div class="att-bar-fill" style="width:60%;background:var(--teal)"></div></div><div class="att-bar-pct">3/5</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ GOALS ══════════════ -->
+    <div class="tab-view" id="view-goals">
+      <div class="grid-2">
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🎯 Semester Goals</div>
+              <button class="card-action">+ Add Goal</button>
+            </div>
+            <div class="card-body" id="goals-list"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📊 Long-term Progress</div>
+            </div>
+            <div class="card-body">
+              <div class="section-label">Academic Year Milestones</div>
+              <div class="att-bar-row"><div class="att-bar-label">Academics</div><div class="att-bar-track"><div class="att-bar-fill" style="width:78%;background:var(--accent)"></div></div><div class="att-bar-pct">78%</div></div>
+              <div class="att-bar-row"><div class="att-bar-label">Skills</div><div class="att-bar-track"><div class="att-bar-fill" style="width:55%;background:var(--teal)"></div></div><div class="att-bar-pct">55%</div></div>
+              <div class="att-bar-row"><div class="att-bar-label">Career Prep</div><div class="att-bar-track"><div class="att-bar-fill" style="width:40%;background:var(--pink)"></div></div><div class="att-bar-pct">40%</div></div>
+              <div class="att-bar-row"><div class="att-bar-label">Projects</div><div class="att-bar-track"><div class="att-bar-fill" style="width:65%;background:var(--amber)"></div></div><div class="att-bar-pct">65%</div></div>
+              <hr class="divider">
+              <div class="section-label">NEP 2020 Alignment</div>
+              <div class="goal-item" style="border-color:rgba(79,142,247,0.2)">
+                <div class="flex-between">
+                  <div style="font-size:13px;font-weight:500">Multidisciplinary Learning</div>
+                  <div style="font-family:var(--mono);font-size:12px;color:var(--accent)">On Track</div>
+                </div>
+                <div style="font-size:11px;color:var(--text2);margin-top:4px">Enrolled in 2 cross-discipline electives this semester</div>
+              </div>
+              <div class="goal-item">
+                <div class="flex-between">
+                  <div style="font-size:13px;font-weight:500">Experiential Learning</div>
+                  <div style="font-family:var(--mono);font-size:12px;color:var(--amber)">In Progress</div>
+                </div>
+                <div style="font-size:11px;color:var(--text2);margin-top:4px">1 internship application sent, 2 projects ongoing</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ PROFILE ══════════════ -->
+    <div class="tab-view" id="view-profile">
+      <div class="grid-2">
+        <div>
+          <div class="profile-header">
+            <div class="profile-avatar">AR</div>
+            <div>
+              <div class="profile-name">Aarav Rajput</div>
+              <div class="profile-meta">Roll No: CS21045 · B.Tech CSE Sem 6</div>
+              <div class="profile-meta">CGPA: 8.4 · Attendance: 91%</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">🧠 Learning Profile</div></div>
+            <div class="card-body">
+              <div class="section-label">Learning Style</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+                <span class="interest-tag selected">Visual Learner</span>
+                <span class="interest-tag selected">Problem Solver</span>
+                <span class="interest-tag">Auditory</span>
+                <span class="interest-tag">Collaborative</span>
+              </div>
+              <div class="section-label">Strengths</div>
+              <div class="att-bar-row"><div class="att-bar-label">Algorithms</div><div class="att-bar-track"><div class="att-bar-fill" style="width:85%;background:var(--green)"></div></div><div class="att-bar-pct">85%</div></div>
+              <div class="att-bar-row"><div class="att-bar-label">Mathematics</div><div class="att-bar-track"><div class="att-bar-fill" style="width:78%;background:var(--accent)"></div></div><div class="att-bar-pct">78%</div></div>
+              <div class="att-bar-row"><div class="att-bar-label">Communication</div><div class="att-bar-track"><div class="att-bar-fill" style="width:62%;background:var(--amber)"></div></div><div class="att-bar-pct">62%</div></div>
+              <div class="att-bar-row"><div class="att-bar-label">Design</div><div class="att-bar-track"><div class="att-bar-fill" style="width:45%;background:var(--pink)"></div></div><div class="att-bar-pct">45%</div></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">⚙️ Notification Settings</div></div>
+            <div class="card-body">
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div class="flex-between">
+                  <div><div style="font-size:13px;font-weight:500">Attendance Alerts</div><div style="font-size:11px;color:var(--text2)">Below 75% warning</div></div>
+                  <div style="font-size:12px;color:var(--green)">ON</div>
+                </div>
+                <div class="flex-between">
+                  <div><div style="font-size:13px;font-weight:500">Free Period Nudges</div><div style="font-size:11px;color:var(--text2)">Task suggestions</div></div>
+                  <div style="font-size:12px;color:var(--green)">ON</div>
+                </div>
+                <div class="flex-between">
+                  <div><div style="font-size:13px;font-weight:500">Goal Reminders</div><div style="font-size:11px;color:var(--text2)">Daily progress check</div></div>
+                  <div style="font-size:12px;color:var(--green)">ON</div>
+                </div>
+                <div class="flex-between">
+                  <div><div style="font-size:13px;font-weight:500">Class Notifications</div><div style="font-size:11px;color:var(--text2)">Room changes, cancellations</div></div>
+                  <div style="font-size:12px;color:var(--green)">ON</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mt-16">
+            <div class="card-header"><div class="card-title">🔒 Privacy & Data</div></div>
+            <div class="card-body">
+              <div style="font-size:13px;color:var(--text2);line-height:1.6">
+                Biometric data (face recognition) is processed locally on device and never transmitted. Attendance records are encrypted and accessible only by authorized faculty and administrators per your institution's data policy.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<!-- TOAST -->
+<div class="notif-toast" id="toast">
+  <div class="notif-icon" id="toast-icon">✅</div>
+  <div>
+    <div class="notif-text-title" id="toast-title">Attendance Marked</div>
+    <div class="notif-text-sub" id="toast-sub">Rahul Sharma – Present via QR</div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+const PERIODS = [
+  {time:'08:00–09:00',name:'Mathematics III',room:'Room 301 · Prof. Mehta',status:'done'},
+  {time:'09:00–10:00',name:'Physics Lab',room:'Lab 2 · Prof. Iyer',status:'done'},
+  {time:'10:00–11:00',name:'Data Structures',room:'Room 204 · Prof. Sharma',status:'current'},
+  {time:'11:00–12:00',name:'Free Period',room:'Library / Self Study',status:'free'},
+  {time:'12:00–01:00',name:'Lunch Break',room:'Cafeteria',status:'free'},
+  {time:'01:00–02:00',name:'Software Engineering',room:'Room 105 · Prof. Gupta',status:'upcoming'},
+  {time:'02:00–03:00',name:'English Communication',room:'Room 207 · Dr. Patel',status:'upcoming'},
+  {time:'03:00–04:00',name:'Free Period',room:'Library / Self Study',status:'free'},
+];
+
+const STUDENTS = [
+  {name:'Aarav R.',roll:'CS01',color:'#4f8ef7'},{name:'Priya S.',roll:'CS02',color:'#ec4899'},
+  {name:'Rahul M.',roll:'CS03',color:'#22c55e'},{name:'Ananya K.',roll:'CS04',color:'#f59e0b'},
+  {name:'Dev P.',roll:'CS05',color:'#14b8a6'},{name:'Sneha V.',roll:'CS06',color:'#a78bfa'},
+  {name:'Arjun T.',roll:'CS07',color:'#ef4444'},{name:'Diya N.',roll:'CS08',color:'#22c55e'},
+  {name:'Karan B.',roll:'CS09',color:'#4f8ef7'},{name:'Neha G.',roll:'CS10',color:'#ec4899'},
+  {name:'Rohan D.',roll:'CS11',color:'#f59e0b'},{name:'Sanya L.',roll:'CS12',color:'#14b8a6'},
+  {name:'Vivek H.',roll:'CS13',color:'#a78bfa'},{name:'Pooja R.',roll:'CS14',color:'#22c55e'},
+  {name:'Aditya M.',roll:'CS15',color:'#4f8ef7'},{name:'Kavya S.',roll:'CS16',color:'#ef4444'},
+];
+
+const studentStatus = {};
+STUDENTS.forEach((s,i) => {
+  studentStatus[s.roll] = i < 12 ? 'present' : i === 12 ? 'late' : i === 13 ? 'absent' : 'unmarked';
+});
+
+const CLASSES = ['CS401 – Data Structures','MATH301 – Calc III','PHY201 – Mechanics','ENG101 – Communication'];
+let activeClass = 0;
+
+const SUGGESTIONS = [
+  {title:'Solve 3 LeetCode Problems',type:'study',typeLabel:'Study',desc:'Based on your Data Structures class today — practice on arrays and linked lists to reinforce lecture concepts.',dur:'45 min',diff:'Medium',match:'93%'},
+  {title:'Watch MIT OCW: Algorithms Lecture 7',type:'skill',typeLabel:'Skill',desc:'Aligns with your software engineering goal. Covers divide & conquer — directly relevant to your upcoming exam.',dur:'50 min',diff:'Advanced',match:'88%'},
+  {title:'Update GitHub Portfolio',type:'career',typeLabel:'Career',desc:'Your career counselor recommends adding 2 projects this semester. Great time to document your current work.',dur:'30 min',diff:'Easy',match:'85%'},
+  {title:'Meditation & Focus Reset',type:'wellness',typeLabel:'Wellness',desc:'You have 3 more sessions today. A 15-minute mindfulness break now can improve afternoon focus by ~20%.',dur:'15 min',diff:'Easy',match:'80%'},
+  {title:'Read: Clean Code – Chapter 4',type:'skill',typeLabel:'Skill',desc:'Recommended by Prof. Gupta for your Software Engineering course. Chapter 4 covers commenting & formatting.',dur:'35 min',diff:'Easy',match:'76%'},
+];
+
+const GOALS = [
+  {name:'Score 8.5+ CGPA this semester',pct:72,sub:'4 exams completed, 2 remaining · On track'},
+  {name:'Complete DSA course on Coursera',pct:55,sub:'Week 6 of 11 · 2.5 hrs/week avg'},
+  {name:'Build a full-stack portfolio project',pct:40,sub:'Backend done · Frontend in progress'},
+  {name:'Apply to 5 summer internships',pct:60,sub:'3 applied, 2 shortlisted · Good pace'},
+  {name:'Maintain 85%+ attendance',pct:91,sub:'Currently at 91% · Exceeding goal ✓'},
+];
+
+const INTERESTS = ['Python','Machine Learning','Competitive Coding','Open Source','Algorithms','Database Systems','System Design','Web Dev'];
+
+const ROUTINE = [
+  {time:'06:30 AM',title:'Morning Review',goal:'Revise yesterday\'s notes – 20 min',done:true},
+  {time:'08:00 AM',title:'Mathematics III',goal:'Active listening + note-taking',done:true},
+  {time:'09:00 AM',title:'Physics Lab',goal:'Focus on practical application',done:true},
+  {time:'10:00 AM',title:'Data Structures',goal:'Current class – stay engaged',active:true},
+  {time:'11:00 AM',title:'Free Period – DSA Practice',goal:'LeetCode: 3 problems (arrays)'},
+  {time:'12:00 PM',title:'Lunch + Recharge',goal:'No screens, eat mindfully'},
+  {time:'01:00 PM',title:'Software Engineering',goal:'Ask Prof. Gupta about project scope'},
+  {time:'02:00 PM',title:'English Communication',goal:'Presentation skills focus'},
+  {time:'03:00 PM',title:'Free Period – Career',goal:'Update GitHub & write LinkedIn post'},
+  {time:'05:00 PM',title:'Evening Study Block',goal:'Complete Coursera DSA week 7'},
+  {time:'08:00 PM',title:'Goal Review',goal:'Check progress on daily tasks'},
+];
+
+// ── CLOCK ──
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('en-IN', {hour12: false});
+}
+updateClock(); setInterval(updateClock, 1000);
+
+// ── TAB SWITCHING ──
+function switchTab(id) {
+  document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+// ── TIMETABLE RENDER ──
+function renderTimetable(el, mini) {
+  el.innerHTML = '';
+  const items = mini ? PERIODS.slice(0,5) : PERIODS;
+  items.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'period-row ' + p.status;
+    const badgeMap = {done:'done',current:'current',free:'free',upcoming:'upcoming'};
+    const labelMap = {done:'Done',current:'Now',free:'Free',upcoming:'Up next'};
+    div.innerHTML = `
+      ${p.status==='current'?'<div class="current-marker"></div>':''}
+      <div class="period-time">${p.time}</div>
+      <div class="period-info">
+        <div class="period-name">${p.name}</div>
+        <div class="period-room">${p.room}</div>
+      </div>
+      <span class="period-badge badge-${badgeMap[p.status]}">${labelMap[p.status]}</span>`;
+    el.appendChild(div);
+  });
+}
+
+// ── STUDENTS GRID ──
+function renderStudents() {
+  const grid = document.getElementById('students-grid');
+  grid.innerHTML = '';
+  STUDENTS.forEach(s => {
+    const st = studentStatus[s.roll];
+    const div = document.createElement('div');
+    div.className = 'student-tile ' + st;
+    div.onclick = () => cycleStatus(s.roll);
+    div.innerHTML = `
+      <div class="stu-status-dot dot-${st}"></div>
+      <div class="stu-avatar" style="background:${s.color}">${s.name.split(' ').map(w=>w[0]).join('')}</div>
+      <div class="stu-name">${s.name}</div>
+      <div class="stu-roll">${s.roll}</div>`;
+    grid.appendChild(div);
+  });
+  updateScreenCount();
+}
+
+function cycleStatus(roll) {
+  const cycle = {present:'absent',absent:'late',late:'present',unmarked:'present'};
+  studentStatus[roll] = cycle[studentStatus[roll]];
+  renderStudents();
+  const s = STUDENTS.find(x => x.roll === roll);
+  showToast('✅', s.name + ' → ' + studentStatus[roll], 'Status updated');
+}
+
+function updateScreenCount() {
+  const presentNames = STUDENTS.filter(s => studentStatus[s.roll] === 'present');
+  document.getElementById('screen-count').textContent = presentNames.length;
+  const container = document.getElementById('screen-names');
+  container.innerHTML = presentNames.slice(0,12).map((s,i) =>
+    `<span class="screen-name-pill${i===presentNames.length-1?' new':''}">${s.name}</span>`).join('');
+  document.getElementById('dash-present').textContent = presentNames.length;
+  document.getElementById('dash-pct').textContent = Math.round(presentNames.length/STUDENTS.length*100)+'%';
+}
+
+// ── SCAN TRIGGER ──
+let scanActive = false, scanInterval;
+function triggerScan() {
+  if (scanActive) return;
+  scanActive = true;
+  const zone = document.getElementById('scan-zone');
+  zone.classList.add('scanning');
+  document.getElementById('scan-icon').textContent = '🔍';
+  document.getElementById('scan-title').textContent = 'Scanning...';
+  document.getElementById('scan-sub').textContent = 'Detecting student devices in range';
+  const unmarked = STUDENTS.filter(s => studentStatus[s.roll] === 'unmarked' || studentStatus[s.roll] === 'absent');
+  let i = 0;
+  scanInterval = setInterval(() => {
+    if (i >= Math.min(3, unmarked.length)) {
+      clearInterval(scanInterval);
+      zone.classList.remove('scanning');
+      document.getElementById('scan-icon').textContent = '✅';
+      document.getElementById('scan-title').textContent = 'Scan Complete';
+      document.getElementById('scan-sub').textContent = 'Tap to scan again';
+      setTimeout(() => {
+        zone.classList.remove('scanning');
+        document.getElementById('scan-icon').textContent = '📷';
+        document.getElementById('scan-title').textContent = 'Tap to Start Attendance Scan';
+        document.getElementById('scan-sub').textContent = 'Students can check in via QR code, Bluetooth, or Face ID';
+        scanActive = false;
+      }, 2000);
+      return;
+    }
+    const s = unmarked[i];
+    studentStatus[s.roll] = 'present';
+    renderStudents();
+    showToast('📲', s.name + ' – Present', 'Auto-detected via ' + (document.querySelector('.scan-method.active')?.textContent || 'QR'));
+    i++;
+  }, 900);
+}
+
+function selectMethod(e, method) {
+  e.stopPropagation();
+  document.querySelectorAll('.scan-method').forEach(m => m.classList.remove('active'));
+  e.target.classList.add('active');
+}
+
+// ── CLASS CHIPS ──
+function renderClassChips() {
+  const el = document.getElementById('class-chips');
+  el.innerHTML = '';
+  CLASSES.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'class-chip' + (i===activeClass?' active':'');
+    div.textContent = c;
+    div.onclick = () => { activeClass = i; renderClassChips(); };
+    el.appendChild(div);
+  });
+}
+
+// ── SUGGESTIONS ──
+function renderSuggestions() {
+  const el = document.getElementById('suggestions-list');
+  el.innerHTML = '';
+  SUGGESTIONS.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'suggestion-card' + (i===0?' selected':'');
+    div.onclick = () => {
+      document.querySelectorAll('.suggestion-card').forEach(c=>c.classList.remove('selected'));
+      div.classList.add('selected');
+      showToast('⚡', s.title, 'Task added to your routine');
+    };
+    div.innerHTML = `
+      <div class="sug-header">
+        <div class="sug-title">${s.title}</div>
+        <span class="sug-type type-${s.type}">${s.typeLabel}</span>
+      </div>
+      <div class="sug-desc">${s.desc}</div>
+      <div class="sug-meta">
+        <div class="sug-tag">⏱ ${s.dur}</div>
+        <div class="sug-tag">📊 ${s.diff}</div>
+        <div class="sug-tag" style="color:var(--green)">✦ ${s.match} match</div>
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+// ── INTERESTS ──
+function renderInterests() {
+  const el = document.getElementById('interests-list');
+  el.innerHTML = '';
+  INTERESTS.forEach(tag => {
+    const span = document.createElement('span');
+    span.className = 'interest-tag' + (['Python','Algorithms','Machine Learning','Competitive Coding'].includes(tag)?' selected':'');
+    span.textContent = tag;
+    span.onclick = () => span.classList.toggle('selected');
+    el.appendChild(span);
+  });
+}
+
+// ── GOALS ──
+function renderGoals() {
+  const el = document.getElementById('goals-list');
+  el.innerHTML = '';
+  GOALS.forEach(g => {
+    const div = document.createElement('div');
+    div.className = 'goal-item';
+    div.innerHTML = `
+      <div class="goal-header">
+        <div class="goal-name">${g.name}</div>
+        <div class="goal-pct">${g.pct}%</div>
+      </div>
+      <div class="goal-track"><div class="goal-fill" style="width:${g.pct}%"></div></div>
+      <div class="goal-sub">${g.sub}</div>`;
+    el.appendChild(div);
+  });
+}
+
+// ── ROUTINE ──
+function renderRoutine() {
+  const el = document.getElementById('routine-list');
+  el.innerHTML = '';
+  ROUTINE.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'routine-item' + (r.active?' active':r.done?' done':'');
+    div.innerHTML = `<div class="routine-time">${r.time}</div>
+      <div class="routine-title">${r.title}</div>
+      <div class="routine-goal">${r.goal}</div>`;
+    el.appendChild(div);
+  });
+}
+
+// ── TOAST ──
+let toastTimer;
+function showToast(icon, title, sub) {
+  clearTimeout(toastTimer);
+  document.getElementById('toast-icon').textContent = icon;
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-sub').textContent = sub;
+  document.getElementById('toast').classList.add('show');
+  toastTimer = setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
+}
+
+// ── AI CHAT ──
+const AI_CONVOS = [
+  {u:null, a:"Hi Aarav! I'm your AI Academic Advisor. I can see you have Data Structures now, then a free period. Would you like personalized task suggestions, or shall we review your semester goals?"},
+];
+
+const AI_RESPONSES = {
+  default: ["Based on your profile and today's schedule, I recommend spending your free period on LeetCode problems related to today's Data Structures lecture. Your goal alignment score is 93% for this task.",
+    "Your attendance is at 91% — well above the 75% threshold. Keep it up! Your weakest subject by attendance is ENG101 at 68%. I'd suggest attending the next 3 sessions without fail.",
+    "For your career goal of becoming a Software Engineer, I recommend: 1) Contributing to an open-source project this week, 2) Revising your GitHub profile, 3) Applying to 2 more internships before May 15th.",
+    "Looking at your semester goals, you're most behind on your portfolio project (40%). I can suggest breaking it into smaller daily tasks during free periods — want me to generate a 2-week sprint plan?"]
+};
+
+let aiConvoIndex = 0;
+function renderAIMessages() {
+  const el = document.getElementById('ai-messages');
+  el.innerHTML = '';
+  AI_CONVOS.forEach(m => {
+    if (m.u) {
+      const div = document.createElement('div');
+      div.className = 'msg msg-user'; div.textContent = m.u; el.appendChild(div);
+    }
+    if (m.a) {
+      const div = document.createElement('div');
+      div.className = 'msg msg-ai'; div.textContent = m.a; el.appendChild(div);
+    }
+  });
+  el.scrollTop = el.scrollHeight;
+}
+
+function sendAIMsg() {
+  const input = document.getElementById('ai-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  AI_CONVOS.push({u: text, a: null});
+  renderAIMessages();
+  // Show typing
+  const el = document.getElementById('ai-messages');
+  const typing = document.createElement('div');
+  typing.className = 'msg msg-ai msg-typing';
+  typing.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  el.appendChild(typing); el.scrollTop = el.scrollHeight;
+
+  // Call Claude API
+  callClaudeAPI(text).then(response => {
+    el.removeChild(typing);
+    AI_CONVOS[AI_CONVOS.length - 1].a = response;
+    renderAIMessages();
+  });
+}
+
+async function callClaudeAPI(userMsg) {
+  try {
+    const systemPrompt = `You are an AI Academic Advisor for EduTrack, an Indian college smart attendance and productivity system. The student is Aarav Rajput, B.Tech CSE Semester 6, CGPA 8.4, attendance 91%. He's interested in Python, Algorithms, Machine Learning, and wants to become a Software Engineer. Today's schedule includes: Mathematics III (done), Physics Lab (done), Data Structures (current), Free Period (next), Software Engineering, English Communication. His goals are: score 8.5+ CGPA, complete DSA Coursera course (55% done), build a portfolio project (40%), apply to 5 internships (60%). Be concise, personalized, and action-oriented. Keep responses under 80 words. Reference NEP 2020 when relevant.`;
+    const history = AI_CONVOS.filter(m => m.a).map(m => ([
+      {role:'user', content: m.u || 'Hello'},
+      {role:'assistant', content: m.a}
+    ])).flat();
+    const messages = [...history, {role:'user', content: userMsg}];
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages
+      })
+    });
+    const data = await res.json();
+    return data.content?.[0]?.text || "I'm having trouble connecting right now. Please try again.";
+  } catch(e) {
+    return AI_RESPONSES.default[aiConvoIndex++ % AI_RESPONSES.default.length];
+  }
+}
+
+// ── INIT ──
+renderTimetable(document.getElementById('mini-timetable'), true);
+renderTimetable(document.getElementById('full-timetable'), false);
+renderStudents();
+renderClassChips();
+renderSuggestions();
+renderInterests();
+renderGoals();
+renderRoutine();
+renderAIMessages();
+
+// Auto-scan demo after 3 seconds
+setTimeout(() => {
+  showToast('📲', 'Priya S. – Present', 'Auto-detected via QR Code');
+}, 3000);
+</script>
+</body>
+</html>
