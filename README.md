@@ -151,11 +151,3 @@ EduTrack AI is designed in accordance with India's **National Education Policy 2
 
 ---
 
-## 🙏 Acknowledgements
-
-- [Anthropic](https://anthropic.com) for the Claude API
-- [Google Fonts](https://fonts.google.com) for DM Sans and Space Mono
-
----
-
-*Built as a solution to the Smart Attendance & Student Productivity problem for Indian educational institutions.*
