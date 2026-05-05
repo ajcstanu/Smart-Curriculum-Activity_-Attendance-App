@@ -16,38 +16,38 @@ EduTrack AI integrates automated attendance tracking with an intelligent student
 
 ## ✨ Features
 
-### ✅ Smart Attendance
+###  Smart Attendance
 - Simulated auto-detection via **QR Code**, **Bluetooth/Wi-Fi proximity**, or **Face Recognition**
 - Real-time classroom attendance board with present/absent/late status
 - One-click manual override for teachers
 - Live count display for classroom screen projection
 
-### 📅 Timetable & Schedule
+###  Timetable & Schedule
 - Daily period-by-period schedule with real-time "current class" indicator
 - Free period and break tagging
 - Room and faculty information per period
 
-### ⚡ Free Period Productivity Suggestions
+###  Free Period Productivity Suggestions
 - Personalized task recommendations based on student interests, strengths, and career goals
 - Tasks tagged by type: Study, Skill, Career, Wellness
 - Match percentage scoring per suggestion (e.g. "93% match")
 
-### 🎯 Goal Tracker
+###  Goal Tracker
 - Semester and long-term goal progress bars
 - NEP 2020 alignment tracking (Multidisciplinary Learning, Experiential Learning)
 - Academic year milestone breakdown
 
-### 🗓️ Daily Routine Planner
+###  Daily Routine Planner
 - Combined timeline of classes, free periods, and personal goals
 - Active/done state tracking throughout the day
 
-### 🤖 AI Academic Advisor (Claude-powered)
+###  AI Academic Advisor (Claude-powered)
 - In-app chat powered by the **Anthropic Claude API**
 - Personalized advice on attendance, goals, internships, and study plans
 - Context-aware: knows student profile, today's schedule, and long-term goals
 - Falls back to curated responses if API is unavailable
 
-### 👤 Student Profile
+###  Student Profile
 - Learning style, strengths, and interest tags
 - Notification preferences
 - Privacy & data policy display (local biometric processing)
